@@ -16,11 +16,11 @@ contract Royalty is ERC721,ERC721Royalty, ERC721URIStorage, ERC721Burnable, Owna
         maxSupply = _maxSupply;
     }
 
-    function safeMint(string memory uri) public {
+    function safeMint(string memory uri,uint96 royaltyBasisPoints) public onlyOwner {
         require(tokenId < maxSupply,"Max supply reached!");
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, uri);
-        _setTokenRoyalty(tokenId, msg.sender,500);
+        _setTokenRoyalty(tokenId, msg.sender,royaltyBasisPoints);
         tokenId++;
     }
 
@@ -38,11 +38,12 @@ contract Royalty is ERC721,ERC721Royalty, ERC721URIStorage, ERC721Burnable, Owna
     }
 }
 
-contract NFTFactory {
+contract NFTFactory is Ownable{
     event CollectionCreated(address collectionAddress, address owner);
-
+    constructor() Ownable(msg.sender){}
     function createCollection(string memory name, string memory symbol,uint256 maxSupply) public {
         Royalty newCollection = new Royalty(name, symbol,maxSupply);
+        newCollection.transferOwnership(msg.sender);
         emit CollectionCreated(address(newCollection), msg.sender);
     }
 }
