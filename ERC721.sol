@@ -25,7 +25,7 @@ contract Royalty is ERC721,ERC721Royalty, ERC721URIStorage, ERC721Burnable, Owna
     }
 
     receive() external payable {
-        emit Received(msg.sender, msg.value); // Emit an event for logging
+        emit Received(msg.sender, msg.value); 
     }
 
     // The following functions are overrides required by Solidity.
@@ -41,6 +41,7 @@ contract Royalty is ERC721,ERC721Royalty, ERC721URIStorage, ERC721Burnable, Owna
 contract NFTFactory is Ownable{
     event CollectionCreated(address collectionAddress, address owner);
     constructor() Ownable(msg.sender){}
+
     function createCollection(string memory name, string memory symbol,uint256 maxSupply) public {
         Royalty newCollection = new Royalty(name, symbol,maxSupply);
         newCollection.transferOwnership(msg.sender);
