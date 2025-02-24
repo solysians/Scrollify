@@ -1,6 +1,183 @@
 import { ethers } from 'ethers';
 
 const factoryAddress = " ";
+const marketPlaceAddress = " ";
+
+const marketPlaceABI = [{
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "listingId",
+            "type": "uint256"
+        }],
+        "name": "ListingCanceled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [{
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "listingId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "seller",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "nftContract",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            }
+        ],
+        "name": "NFTListed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [{
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "listingId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "buyer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "nftContract",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            }
+        ],
+        "name": "NFTSold",
+        "type": "event"
+    },
+    {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "listingId",
+            "type": "uint256"
+        }],
+        "name": "buyNFT",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "listingId",
+            "type": "uint256"
+        }],
+        "name": "cancelListing",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [{
+                "internalType": "address",
+                "name": "nftContract",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            }
+        ],
+        "name": "listNFT",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "listingIdCounter",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "name": "listings",
+        "outputs": [{
+                "internalType": "address",
+                "name": "seller",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "nftContract",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isActive",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
 const factoryABI = [{
         "inputs": [],
         "stateMutability": "nonpayable",
@@ -765,6 +942,7 @@ const signer = provider.getSigner();
 
 const factoryContract = new ethers.Contract(factoryAddress, factoryABI, signer);
 const royaltyContract = new ethers.Contract(getEvent(), royaltyABI, signer);
+const marketPlace = new ethers.Contract(marketPlaceAddress, marketPlaceABI, signer);
 
 const createCollection = async(name, symbol, maxSupply) => {
     const tx = await factoryContract.createCollection(name, Symbol, maxSupply);
@@ -772,14 +950,33 @@ const createCollection = async(name, symbol, maxSupply) => {
     getEvent(receipt);
 }
 
-const getEvent = (receipt) => {
-    const collectionCreatedEvent = receipt.events.find((e) => e.events === "CollectionCreated");
-    const collectionAddress = collectionCreatedEvent.args.collectionAddress;
-    console.log("new collection address deployed at: ", collectionAddress);
+const getEvent = (receipt, eventName) => {
+    const collectionCreatedEvent = receipt.events.find((e) => e.events === eventName);
+    const event = collectionCreatedEvent.args.NFTListed;
+    console.log(event);
 }
 
 const mint = async(tokenURI, royaltyBasisPoints) => {
     const tx = await royaltyContract.safeMint(tokenURI, royaltyBasisPoints);
     const receipt = await tx.wait();
     console.log('you have successfull minted an NFT');
+}
+
+const list = async(nftContract, tokenId, price) => {
+    const tx = await marketPlace.listNFT(nftContract, tokenId, price);
+    const receipt = await tx.wait();
+    getEvent(receipt, NFTListed);
+    console.log("NFT listed for sale!");
+}
+
+const buy = async(tokenId, price) => {
+    const tx = await marketPlace.buyNFT(tokenId, { value: ethers.utils.parsEther(price) });
+    const receipt = await tx.wait();
+    getEvent(receipt, NFTSold);
+}
+
+const cancelListing = async(listingId) => {
+    const tx = await marketPlace.cancelListing(listingId);
+    const receipt = await tx.wait();
+    getEvent(receipt, ListingCanceled);
 }
