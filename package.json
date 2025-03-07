@@ -1,0 +1,23 @@
+{
+    "dependencies": {
+        "ethers": "^6.13.5"
+    },
+    "name": "scrollify",
+    "version": "1.0.0",
+    "description": "**MyToken (MTK)** is an ERC721-based NFT smart contract built on the Ethereum blockchain. This contract allows users to mint, transfer, and burn unique NFTs, with metadata stored off-chain.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/solysians/Scrollify.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/solysians/Scrollify/issues"
+    },
+    "homepage": "https://github.com/solysians/Scrollify#readme"
+}
