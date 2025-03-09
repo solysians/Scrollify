@@ -1,5 +1,6 @@
 .spinning-wheel {
     text-align: center;
+    font-family: "Arial", sans-serif;
 }
 
 .wheel-container {
@@ -13,9 +14,10 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: conic-gradient( from 0deg, red 0deg 60deg, blue 60deg 120deg, green 120deg 180deg, yellow 180deg 240deg, orange 240deg 300deg, purple 300deg 360deg);
     position: relative;
-    transition: transform 3s ease-out;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .segment {
@@ -26,12 +28,14 @@
     justify-content: center;
     align-items: center;
     transform-origin: center;
+    clip-path: polygon(50% 50%, 100% 0, 100% 100%);
 }
 
 .segment span {
     transform: rotate(90deg);
     color: white;
     font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .pointer {
@@ -41,14 +45,36 @@
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 20px solid black;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid #ff4757;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
 }
 
 button {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff4757;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #ff6b81;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
 }

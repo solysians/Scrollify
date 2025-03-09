@@ -17,7 +17,7 @@ const SpinningWheel = ({ segments }) => {
 
     // Apply the rotation to the wheel
     const wheel = document.querySelector(".wheel");
-    wheel.style.transition = "transform 3s ease-out";
+    wheel.style.transition = "transform 3s cubic-bezier(0.4, 0, 0.2, 1)";
     wheel.style.transform = `rotate(${randomAngle}deg)`;
 
     // Determine the result after the spin ends
@@ -39,6 +39,7 @@ const SpinningWheel = ({ segments }) => {
               className="segment"
               style={{
                 transform: `rotate(${(360 / segments.length) * index}deg)`,
+                backgroundColor: `hsl(${(360 / segments.length) * index}, 70%, 50%)`,
               }}
             >
               <span>{segment}</span>
@@ -50,7 +51,7 @@ const SpinningWheel = ({ segments }) => {
       <button onClick={spinWheel} disabled={spinning}>
         {spinning ? "Spinning..." : "Spin"}
       </button>
-      {result && <p>You won: {result}</p>}
+      {result && <p className="result">You won: <strong>{result}</strong></p>}
     </div>
   );
 };
