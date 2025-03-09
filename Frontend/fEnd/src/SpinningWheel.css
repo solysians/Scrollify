@@ -1,0 +1,54 @@
+.spinning-wheel {
+    text-align: center;
+}
+
+.wheel-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient( from 0deg, red 0deg 60deg, blue 60deg 120deg, green 120deg 180deg, yellow 180deg 240deg, orange 240deg 300deg, purple 300deg 360deg);
+    position: relative;
+    transition: transform 3s ease-out;
+}
+
+.segment {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: center;
+}
+
+.segment span {
+    transform: rotate(90deg);
+    color: white;
+    font-weight: bold;
+}
+
+.pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid black;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
